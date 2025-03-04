@@ -9,8 +9,12 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // Carpeta temporal
 
 // app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://kiosco-frontend.vercel.app'
+];
 app.use(cors({
-  origin: 'http://localhost:5173', // Permitir solo solicitudes desde esta URL
+  origin: allowedOrigins, // Permitir solo solicitudes desde esta URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'] // Encabezados permitidos
 }));
