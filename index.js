@@ -6,9 +6,10 @@ const { uploadImage } = require('./driveService');
 
 const app = express();
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // Carpeta temporal
+const storage = multer.memoryStorage(); // Almacenamiento en memoria
+// const upload = multer({ dest: 'uploads/' }); // Carpeta temporal
+const upload = multer({ storage }); // Usar almacenamiento en memoria
 
-// app.use(cors());
 const allowedOrigins = [
   'http://localhost:5173',
   'https://kiosco-frontend.vercel.app'
@@ -42,7 +43,7 @@ app.get('/api/productos', async (req, res) => {
 
     const rows = response.data.values;
     if (!rows) return res.status(404).json({ error: "No se encontraron productos" });
-    console.log(rows);
+    // console.log(rows);
     const productos = rows.map(row => ({
       // id: row[0],
       // nombre: row[1],
@@ -275,15 +276,31 @@ app.put('/api/productos/:id', async (req, res) => {
 //     res.status(500).json({ error: "Error al actualizar el producto" });
 //   }
 // });
+
 /* Cargar Imagenes */
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
-    const imageUrl = await uploadImage(req.file.path, req.file.originalname);
+    if (!req.file) {
+      return res.status(400).json({ error: "No se proporcionó ninguna imagen" });
+    }
+
+    // Enviar buffer y nombre del archivo a la función uploadImage
+    const imageUrl = await uploadImage(req.file.buffer, req.file.originalname);
+
     res.json({ success: true, imageUrl });
   } catch (error) {
-    res.status(500).json({ error: 'Error al subir la imagen' });
+    console.error("Error al subir la imagen:", error);
+    res.status(500).json({ error: "Error al subir la imagen" });
   }
 });
+// app.post('/upload', upload.single('image'), async (req, res) => {
+//   try {
+//     const imageUrl = await uploadImage(req.file.path, req.file.originalname);
+//     res.json({ success: true, imageUrl });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error al subir la imagen' });
+//   }
+// });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
