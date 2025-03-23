@@ -13,7 +13,8 @@ class ProductoService {
   async getProductoById(id) {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: "A2:M",
+      range: "A2:N",
+      // range: "A2:M",
     });
     return response.data.values.find(row => row[0] === id);
   }
@@ -21,7 +22,8 @@ class ProductoService {
   async createProducto(productoData) {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: 'A2:A',
+      range: 'A2:N',
+      // range: 'A2:A',
     });
 
     const rows = response.data.values;

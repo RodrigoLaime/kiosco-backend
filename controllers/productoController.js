@@ -74,7 +74,8 @@ const createProducto = async (req, res) => {
       fecha_vencimiento,
       oferta_mayorista,
       proveedor,
-      imagen_url
+      imagen_url,
+      public_id
     } = req.body;
 
     if (!nombre || !categoria || !precio_unitario || !stock_disponible) {
